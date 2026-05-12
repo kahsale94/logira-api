@@ -31,7 +31,7 @@ def atualizar_produto(num: int, produto: ProdutoUpdate, db: db_dependecy):
         raise HTTPException(status_code=409, detail="Produto ja cadastrado!")
     return atualizado
 
-@router.delete("/produtos/{num}", status_code=409)
+@router.delete("/produtos/{num}", status_code=204)
 def excluir_produto(num: int, db: db_dependecy):
     deletado = repo.excluir_produto(db, num)
     if not deletado:

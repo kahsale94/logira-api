@@ -149,19 +149,19 @@ async function zerarEstoque(num_produto) {
 
 function initEstoqueEventos() {
 
-    const section = document.getElementById("produtos");
+    const section = document.getElementById("estoque");
     if (!section) return;
 
     section.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button");
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
 
         const action = btn.dataset.action;
-        if (!action) return;
 
         switch (action) {
-
             case "recarregar-estoque":
-                carregarEstoque(true);
+                state.estoque.cache = [];
+                await carregarEstoque(true);
                 break;
         }
     });
