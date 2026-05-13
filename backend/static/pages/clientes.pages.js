@@ -103,7 +103,7 @@ async function salvarCliente() {
         await api(`${API_BASE}/clientes/clientes`, "POST", data);
         state.clientes.cache = [];
         limparFormulario("cliente");
-        carregarClientes(true);
+        await carregarClientes(true);
 
         mostrarSucesso("Cliente criado com sucesso!");
 
@@ -151,7 +151,7 @@ async function salvarEdicaoCliente(clienteNum) {
         
         state.clientes.ui.editando = null;
         state.clientes.cache = [];
-        carregarClientes(true);
+        await carregarClientes(true);
 
         mostrarSucesso("Cliente atualizado com sucesso!");
 
@@ -175,7 +175,7 @@ async function excluirCliente(clienteNum) {
         await api(`${API_BASE}/clientes/clientes/${clienteNum}`, "DELETE");
 
         state.clientes.cache = [];
-        carregarClientes(true);
+        await carregarClientes(true);
 
         mostrarSucesso("Cliente excluido com sucesso!");
 
@@ -205,10 +205,10 @@ function initClientesEventos() {
     if (!section) return;
 
     section.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button");
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
 
         const action = btn.dataset.action;
-        if (!action) return;
 
         switch (action) {
 
@@ -224,8 +224,8 @@ function initClientesEventos() {
                 salvarCliente();
                 break;
 
-            case "recarregar-cliente":
-                carregarClientes(true);
+            case "recarregar-clientes":
+                await carregarClientes(true);
                 break;
         }
     });
@@ -234,14 +234,14 @@ function initClientesEventos() {
     if (!tbody) return;
 
     tbody.addEventListener("click", (e) => {
-        const btn = e.target.closest("button");
+        const btn = e.target.closest("button[data-action]");
         if (!btn) return;
 
         const tr = btn.closest("tr");
         const clienteId = Number(tr.dataset.id);
         const action = btn.dataset.action;
 
-        if (!clienteId || !action) return;
+        if (!clienteId) return;
 
         switch (action) {
             case "editar":

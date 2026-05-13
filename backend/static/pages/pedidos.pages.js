@@ -202,7 +202,7 @@ async function salvarEdicaoPedido(pedidoNum) {
 
         state.pedidos.cache = [];
         delete state.pedidos.itensPorPedido[pedidoNum];
-        carregarPedidos(true);
+        await carregarPedidos(true);
 
         mostrarSucesso("Pedido atualizado com sucesso!");
 
@@ -229,7 +229,7 @@ async function excluirPedido(pedidoNum) {
         state.pedidos.cache = [];
         delete state.pedidos.itensPorPedido[pedidoNum];
 
-        carregarPedidos(true);
+        await carregarPedidos(true);
 
         mostrarSucesso("Pedido excluido com sucesso!");
 
@@ -419,7 +419,7 @@ async function salvarEdicaoItemPedido(pedidoNum, itemNum) {
         state.pedidos.itensPorPedido[pedidoNum] = itensAtualizados;
 
         renderItensPedido(state.pedidos.ui.detalhesAbertos, itensAtualizados, pedidoNum);
-        carregarPedidos(true);
+        await carregarPedidos(true);
 
         mostrarSucesso("Item atualizado com sucesso!");
     } catch (error) {
@@ -453,7 +453,7 @@ async function excluirItemPedido(pedidoNum, itemNum) {
         state.pedidos.cache = [];
         delete state.pedidos.itensPorPedido[pedidoNum];
 
-        carregarPedidos(true);
+        await carregarPedidos(true);
 
         mostrarSucesso("Item excluido com sucesso!");
     
@@ -618,7 +618,7 @@ async function salvarPedido() {
 
         renderItensNovoPedido();
         limparFormulario("pedido");
-        carregarPedidos(true);
+        await carregarPedidos(true);
 
         mostrarSucesso("Pedido criado com sucesso!");
 
@@ -717,10 +717,10 @@ function initPedidosEventos() {
     if (!section) return;
 
     section.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button");
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
 
         const action = btn.dataset.action;
-        if (!action) return;
 
         switch (action) {
 
@@ -746,7 +746,7 @@ function initPedidosEventos() {
                 break;
 
             case "recarregar-pedidos":
-                carregarPedidos(true);
+                await carregarPedidos(true);
                 break;
         }
     });
@@ -755,21 +755,20 @@ function initPedidosEventos() {
     if (!tbody) return;
 
     tbody.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button");
-        const tr = e.target.closest("tr");
+        const btn = e.target.closest("button[data-action]");
+        const tr = e.target.closest("tr[data-id]");
 
-        if (!tr || !tr.dataset.id) return;
+        if (!tr) return;
 
         const pedidoNum = Number(tr.dataset.id);
 
         if (!btn) {
             if (state.pedidos.ui.pedidoEditando) return;
-            toggleDetalhesPedido(tr, pedidoNum);
+            await toggleDetalhesPedido(tr, pedidoNum);
             return;
         }
 
         const action = btn.dataset.action;
-        if (!action) return;
 
         e.stopPropagation();
 

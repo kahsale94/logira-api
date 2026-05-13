@@ -119,7 +119,7 @@ async function salvarEdicaoEstoque(num_produto) {
         state.estoque.ui.editando = null;
         state.estoque.cache = [];
 
-        carregarEstoque(true);
+        await carregarEstoque(true);
 
         mostrarSucesso("Estoque atualizado com sucesso!");
 
@@ -137,7 +137,7 @@ async function zerarEstoque(num_produto) {
         await api(`${API_BASE}/estoque/${num_produto}/zerar`, "PUT");
 
         state.estoque.cache = [];
-        carregarEstoque(true);
+        await carregarEstoque(true);
 
         mostrarSucesso("Estoque zerado com sucesso!");
 

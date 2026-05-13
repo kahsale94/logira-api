@@ -134,7 +134,7 @@ async function salvarEdicaoProduto(produtoNum) {
         state.produtos.ui.editando = null;
         state.produtos.cache = [];
 
-        carregarProdutos(true);
+        await carregarProdutos(true);
 
         mostrarSucesso("Produto atualizado com sucesso!");
     
@@ -159,7 +159,7 @@ async function excluirProduto(produtoNum) {
 
         state.produtos.cache = [];
         state.estoque.cache = [];
-        carregarProdutos(true);
+        await carregarProdutos(true);
 
         mostrarSucesso("Produto excluido com sucesso!");
     
@@ -210,7 +210,7 @@ async function salvarProduto() {
         state.produtos.cache = [];
         state.estoque.cache = [];
         limparFormulario("produto");
-        carregarProdutos(true);
+        await carregarProdutos(true);
 
         mostrarSucesso("Produto criado com sucesso!");
 
@@ -226,10 +226,10 @@ function initProdutosEventos() {
     if (!section) return;
 
     section.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button");
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
 
         const action = btn.dataset.action;
-        if (!action) return;
 
         switch (action) {
 
@@ -245,8 +245,8 @@ function initProdutosEventos() {
                 salvarProduto();
                 break;
 
-            case "recarregar-produto":
-                carregarProdutos(true);
+            case "recarregar-produtos":
+                await carregarProdutos(true);
                 break;
         }
     });
@@ -255,14 +255,12 @@ function initProdutosEventos() {
     if (!tbody) return;
 
     tbody.addEventListener("click", (e) => {
-        const btn = e.target.closest("button");
+        const btn = e.target.closest("button[data-action]");
         if (!btn) return;
 
         const tr = btn.closest("tr");
         const produtoId = Number(tr.dataset.id);
         const action = btn.dataset.action;
-
-        if (!action) return;
 
         switch (action) {
             case "editar":
