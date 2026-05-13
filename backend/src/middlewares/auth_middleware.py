@@ -1,7 +1,9 @@
 import time
 from collections import defaultdict
+
 from fastapi import Request, HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
+
 
 class LoggingMiddleware(BaseHTTPMiddleware):
 
@@ -12,9 +14,14 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         process_time = round((time.time() - start_time) * 1000, 2)
 
-        print(f"Request: {request.method} {request.url.path}\nStatus: {response.status_code}\nTime: {process_time}ms")
+        print(
+            f"Request: {request.method} {request.url.path}\n"
+            f"Status: {response.status_code}\n"
+            f"Time: {process_time}ms"
+        )
 
         return response
+
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
 
@@ -40,4 +47,17 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.clients[client_ip].append(current_time)
 
         response = await call_next(request)
+        return response
+
+
+class NoCacheStaticFilesMiddleware(BaseHTTPMiddleware):
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+
+        if request.url.path.startswith("/static/") or request.url.path.endswith(".html"):
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+
         return response

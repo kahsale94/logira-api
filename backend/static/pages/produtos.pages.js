@@ -246,6 +246,7 @@ function initProdutosEventos() {
                 break;
 
             case "recarregar-produtos":
+                state.produtos.cache = [];
                 await carregarProdutos(true);
                 break;
         }
@@ -258,7 +259,9 @@ function initProdutosEventos() {
         const btn = e.target.closest("button[data-action]");
         if (!btn) return;
 
-        const tr = btn.closest("tr");
+        const tr = btn.closest("tr[data-id]");
+        if (!tr) return;
+
         const produtoId = Number(tr.dataset.id);
         const action = btn.dataset.action;
 

@@ -746,6 +746,7 @@ function initPedidosEventos() {
                 break;
 
             case "recarregar-pedidos":
+                state.pedidos.cache = [];
                 await carregarPedidos(true);
                 break;
         }

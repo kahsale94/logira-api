@@ -225,6 +225,7 @@ function initClientesEventos() {
                 break;
 
             case "recarregar-clientes":
+                state.clientes.cache = [];
                 await carregarClientes(true);
                 break;
         }
@@ -237,7 +238,9 @@ function initClientesEventos() {
         const btn = e.target.closest("button[data-action]");
         if (!btn) return;
 
-        const tr = btn.closest("tr");
+        const tr = btn.closest("tr[data-id]");
+        if (!tr) return;
+
         const clienteId = Number(tr.dataset.id);
         const action = btn.dataset.action;
 

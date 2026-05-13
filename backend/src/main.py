@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.config import ENVIRONMENT
 from src.security import auth_routes
-from src.middlewares.auth_middleware import LoggingMiddleware, RateLimitMiddleware
+from src.middlewares.auth_middleware import LoggingMiddleware, RateLimitMiddleware, NoCacheStaticFilesMiddleware
 from src.routes import pedidos_routes, clientes_routes, produtos_routes, usuarios_routes, estoque_routes, n8n_routes
 
 if ENVIRONMENT == "production":
@@ -26,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(NoCacheStaticFilesMiddleware)
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(RateLimitMiddleware, max_requests=100, window=60)
 
