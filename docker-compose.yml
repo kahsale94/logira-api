@@ -19,6 +19,13 @@ services:
                 aliases:
                     - postgres
 
+    postgre-panel:
+        image: adminer:5
+        restart: unless-stopped
+        depends_on:
+            db-postgres:
+                condition: service_healthy
+
     db-redis:
         image: redis:7.2-alpine
         restart: unless-stopped
