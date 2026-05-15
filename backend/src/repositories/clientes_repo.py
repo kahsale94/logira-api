@@ -3,7 +3,7 @@ from src.models.cliente_model import Cliente
 
 class ClienteRepository:
 
-    def criar_cliente(self, db: Session, nome: str, telefone: int, endereco: str):
+    def criar_cliente(self, db: Session, nome: str, telefone: str, endereco: str):
 
         existente = db.query(Cliente).filter(Cliente.nome == nome).first()
         if existente:
@@ -21,7 +21,7 @@ class ClienteRepository:
 
         return cliente
 
-    def atualizar_cliente(self, db: Session, num: int, nome: str, telefone: int, endereco: str):
+    def atualizar_cliente(self, db: Session, num: int, nome: str, telefone: str, endereco: str):
 
         cliente = db.query(Cliente).filter(Cliente.num == num).first()
         if not cliente:
